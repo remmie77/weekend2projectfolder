@@ -11,28 +11,44 @@ function readyNow() {
 
     
 }
-let findId = '';
+let operand = '';
+let solution = null;
+
 
 function setOperand(){
-    findId = $(this).data("operator");
-    console.log(findId);
+    operand = $(this).data("operator");
+    console.log(operand);
     
 }//end setOperand
 function buildObjectToSend(){
     console.log('buildObjectToSend');
-    const packToGo = {};
-    packToGo.inputOne = $( '#first-number' ).val();
-    packToGo.inputTwo = $( '#second-number' ).val();
-    packToGo.operand = findId;
-    clear();
-    sendEquation(packToGo);
+    let okToEvaluate = true;
+    if ( $( '#first-number' ).val() == '' ){
+        alert( 'whoopsie, you forgot the first nember!' );
+        okToEvaluate = false;
+    }
+    if ( $('#second-number').val() == ''){
+        alert( 'whoopsie, you forgot the second number!' );
+        okToEvaluate = false;
+    }
+    if ( operand === '' ){
+        alert( 'you didn\'t pick an operand' );
+        okToEvaluate = false;
+    }
+    if ( okToEvaluate == true ) {
+        const packToGo = {};
+        packToGo.inputOne = $( '#first-number' ).val();
+        packToGo.inputTwo = $( '#second-number' ).val();
+        packToGo.operand = operand;
+        sendEquation(packToGo);
+        clear();
+    }
 }//end buildObjectToSend
 
 
 
 function sendEquation(equation){
     console.log('equation', equation);
-    
     $.ajax({
         method: 'post',
         url: '/math',
@@ -41,6 +57,8 @@ function sendEquation(equation){
         console.log('success', response);
         console.log(response.solution);
         //append that cslog to UL
+        solution = response.solution;
+        $('#solution-list').append('<li class="hey">' + solution + '</li>');
     }).catch(function(error){
         alert('no data');
         console.log(error);
@@ -50,5 +68,7 @@ function sendEquation(equation){
 function clear(){
     $( '#first-number' ).val('');
     $( '#second-number' ).val('');
-    findId = '';
+    operand = '';
+    solution = null;
+    $( '#solution-list' ).children().remove();
 }
