@@ -47,23 +47,37 @@ function buildObjectToSend(){
 
 
 
-function sendEquation(equation){
+function sendEquation( equation ){
     console.log('equation', equation);
     $.ajax({
         method: 'post',
         url: '/math',
         data: equation
-    }).then(function(response){
-        console.log('success', response);
-        console.log(response.solution);
-        //append that cslog to UL
-        solution = response.solution;
-        $('#solution-list').append('<li class="hey">' + solution + '</li>');
-    }).catch(function(error){
+    }).then(function( response ){
+        console.log('success', response );
+        if( response == 'Created' ){
+            getSolution();  
+        }
+    }).catch(function( error ){
         alert('no data');
         console.log(error);
     });
 }
+
+function getSolution(){
+    console.log('in getSolution ');
+    $.ajax({
+        method: 'get',
+        url: '/math',
+    //no data on a get     
+    }).then(function( response ){
+        console.log( 'response in getSolution ', response );
+        solution = response.solution;
+        $('#solution-list').append('<li class="hey">' + solution + '</li>');
+    }).catch(function( error ){
+        alert( 'no data' );
+    });  
+}//end getSolution
 
 function clear(){
     $( '#first-number' ).val('');
