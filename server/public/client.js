@@ -3,13 +3,19 @@ $(document).ready(readyNow);
 function readyNow() {
     console.log('jq o-tay');
     $( '#equals' ).on('click', buildObjectToSend);
-    $( '.calc' ).on('click', setOperand);
+    $( '#plus' ).on('click', setOperand);
+    $( '#minus' ).on('click', setOperand);
+    $( '#divide' ).on('click', setOperand);
+    $( '#multiply' ).on('click', setOperand);
+    $( '#clear' ).on('click', clear);
+
+    
 }
-let findId = 'plus';
+let findId = '';
+
 function setOperand(){
-    let operator = $( this ).data('operator');
-    console.log(operator);
-    console.log($(this.id));
+    findId = $(this).data("operator");
+    console.log(findId);
     
 }//end setOperand
 function buildObjectToSend(){
@@ -18,6 +24,7 @@ function buildObjectToSend(){
     packToGo.inputOne = $( '#first-number' ).val();
     packToGo.inputTwo = $( '#second-number' ).val();
     packToGo.operand = findId;
+    clear();
     sendEquation(packToGo);
 }//end buildObjectToSend
 
@@ -38,4 +45,10 @@ function sendEquation(equation){
         alert('no data');
         console.log(error);
     });
+}
+
+function clear(){
+    $( '#first-number' ).val('');
+    $( '#second-number' ).val('');
+    findId = '';
 }
