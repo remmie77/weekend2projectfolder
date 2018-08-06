@@ -2,29 +2,25 @@ $(document).ready(readyNow);
 
 function readyNow() {
     console.log('jq o-tay');
-    $( '#equals' ).on('click', buildObjectToSend);
-    $( '#plus' ).on('click', setOperand);
-    $( '#minus' ).on('click', setOperand);
-    $( '#divide' ).on('click', setOperand);
-    $( '#multiply' ).on('click', setOperand);
-    $( '#clear' ).on('click', clear);
-
-    
+    $( '#equals' ).on('click', buildObjectToSend );
+    $( '#plus' ).on('click', setOperand );
+    $( '#minus' ).on('click', setOperand );
+    $( '#divide' ).on('click', setOperand );
+    $( '#multiply' ).on('click', setOperand );
+    $( '#clear' ).on('click', clear );
+    $( '#test-message' ).on('click', sendToServer );
 }
 let operand = '';
 let solution = null;
-
-
 function setOperand(){
     operand = $(this).data("operator");
     console.log(operand);
-    
 }//end setOperand
 function buildObjectToSend(){
     console.log('buildObjectToSend');
     let okToEvaluate = true;
     if ( $( '#first-number' ).val() == '' ){
-        alert( 'whoopsie, you forgot the first nember!' );
+        alert( 'whoopsie, you forgot the first number!' );
         okToEvaluate = false;
     }
     if ( $('#second-number').val() == ''){
@@ -44,9 +40,6 @@ function buildObjectToSend(){
         clear();
     }
 }//end buildObjectToSend
-
-
-
 function sendEquation( equation ){
     console.log('equation', equation);
     $.ajax({
@@ -60,15 +53,14 @@ function sendEquation( equation ){
         }
     }).catch(function( error ){
         alert('no data');
-        console.log(error);
+        console.log( error );
     });
-}
-
+}//end sendEquation
 function getSolution(){
     console.log('in getSolution ');
     $.ajax({
         method: 'get',
-        url: '/math',
+        url: '/math'
     //no data on a get     
     }).then(function( response ){
         console.log( 'response in getSolution ', response );
@@ -78,11 +70,41 @@ function getSolution(){
         alert( 'no data' );
     });  
 }//end getSolution
-
 function clear(){
     $( '#first-number' ).val('');
     $( '#second-number' ).val('');
     operand = '';
     solution = null;
     $( '#solution-list' ).children().remove();
+}
+function sendToServer(){
+    clientInput = $( '#something-to-display' ).val();
+    const packToGo = {clientInput};
+    console.log(packToGo);
+    $.ajax({
+        method: 'post',
+        url: '/toDom',
+        data: packToGo
+    }).then(function( response ){
+        console.log( 'success', response );
+        appendToDom();
+    }).catch(function( error ){
+        alert( 'no data' );
+        console.log( error );
+    });
+}//end sendToServer
+
+function appendToDom(){
+    console.log( 'in appendToDom' );
+    $.ajax({
+        method: 'get',
+        url: '/toDom'
+        //no data on a get
+    }).then(function( response ){
+        console.log( 'response in appendToDom', response );
+        let clientSaid = response.clientInput
+        $( '#thaList' ).append('<li>' + clientSaid + '</li>');
+    }).catch(function( error ){
+        alert( 'no data' );
+    });
 }

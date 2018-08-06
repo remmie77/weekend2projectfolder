@@ -10,7 +10,7 @@ let result = {};
 //routes
 router.post('/', ( request, response ) => {
     console.log( 'hit math post route' );
-    console.log( ' request.body ', request.body );
+    console.log( 'math route request.body ', request.body );
     result.solution = doMath( request.body.inputOne, request.body.inputTwo, request.body.operand);
     response.sendStatus(201);
 });
